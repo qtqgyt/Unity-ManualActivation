@@ -1,18 +1,21 @@
-﻿name: Acquire activation file with GUI
+name: Acquire activation file with GUI
 
 on:
   workflow_dispatch:
     inputs:
       unityVersion:
-        description: 'Unity Version to request an activation file from.'
+        description: 'Unity Version (e.g., 4.6.8p1)'
         required: true
+        default: '4.6.8p1'
 
 jobs:
   activation:
     name: Request manual activation file 🔑
     runs-on: ubuntu-latest
     steps:
-    
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Request manual activation file
         id: getManualLicenseFile
         uses: game-ci/unity-request-activation-file@v2
@@ -20,7 +23,7 @@ jobs:
           unityVersion: ${{ github.event.inputs.unityVersion }}
           
       - name: Expose as artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.getManualLicenseFile.outputs.filePath }}
+          name: Unity_Manual_Activation_File
           path: ${{ steps.getManualLicenseFile.outputs.filePath }}
